@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Button, TextInput, View } from "react-native";
 
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
 
-import { db } from "../../database/db";
+import { app } from "../../database/firebaseConfig";
 
 export function Register({ navigation }) {
   const [name, setName] = useState();
@@ -12,21 +11,12 @@ export function Register({ navigation }) {
   const [password, setPassword] = useState();
 
   const handleSubmit = async () => {
-    const auth = getAuth();
+    const auth = getAuth(app);
     try {
-      const data = await createUserWithEmailAndPassword(auth, email, password);
-      if (data) {
-        try {
-          const data = await addDoc(collection(db, "users"), {
-            name,
-            email,
-          });
-        } catch (err) {
-          console.log("err-Doc: ", err);
-        }
-      }
+      const data = await createUserWithEmailAndPassword(auth, email, password)
+      console.log(data)
     } catch (err) {
-      console.log("err-User: ", err);
+      console.log('err: ', err)
     }
   };
 
