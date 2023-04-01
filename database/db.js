@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA1KLFMA7hT_lroPkZxclbxLWRrh8YCULc",
-  authDomain: "imagigram-test.firebaseapp.com",
-  projectId: "imagigram-test",
-  storageBucket: "imagigram-test",
-  messagingSenderId: "X2040111446",
-  appId: "1:2040111446:web:4cda287faa49ca727e76f7",
+  apiKey: "AIzaSyAXDixVFg5ofXBRytK03T_RJBaTTFnh0pE",
+  authDomain: "imagigram-bba35.firebaseapp.com",
+  projectId: "imagigram-bba35",
+  storageBucket: "imagigram-bba35.appspot.com",
+  messagingSenderId: "694335861922",
+  appId: "1:694335861922:web:3a97bb7b3f97c579c953fb"
 };
 
 const app = initializeApp(firebaseConfig);
