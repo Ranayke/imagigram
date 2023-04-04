@@ -5,11 +5,25 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { app } from "./database/firebaseConfig";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import rootReducers from "./redux/reducers";
+import thunk from "redux-thunk";
+
+import Main from "./components/Main";
 import { Landing } from "./components/auth/Landing";
 import { Register } from "./components/auth/Register";
 import Login from "./components/auth/Login";
 
 const Stack = createNativeStackNavigator();
+
+const store = createStore(
+  rootReducers,
+  compose(
+    applyMiddleware(thunk),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,9 +42,9 @@ export default function App() {
   }, []);
 
   const LoggedIn = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Bem vindo!</Text>
-    </View>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
 
   const Loading = () => (
