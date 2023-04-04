@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, TextInput, View } from "react-native";
-
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, doc, setDoc } from "firebase/firestore";
 
-import { app } from "../../database/firebaseConfig";
+import { app, db } from "../../database/firebaseConfig";
 
 export function Register({ navigation }) {
   const [name, setName] = useState();
@@ -13,9 +13,20 @@ export function Register({ navigation }) {
   const handleSubmit = async () => {
     const auth = getAuth(app);
     try {
-      const data = await createUserWithEmailAndPassword(auth, email, password)
+      const dataUser = await createUserWithEmailAndPassword(auth, email, password)
+      if (dataUser) {
+        try {
+          const usersRef = collection(db, "users")
+          await setDoc(doc(usersRef, auth.currentUser.uid), {
+            name,
+            email,
+          })
+        } catch (err) {
+          console.log('errDoc: ', err);
+        }
+      }
     } catch (err) {
-      console.log('err: ', err)
+      console.log('errUser: ', err)
     }
   };
 
