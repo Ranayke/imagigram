@@ -15,7 +15,6 @@ export const fetchUser = () => {
       .then((snapshot) => {
         if (snapshot.exists) {
           const data = snapshot.data();
-          console.log('data: ', data)
           dispatch({ type: USER_STATE_CHANGE, currentUser: { ...data, uid } });
         } else {
           console.log('Action Fetch User: User does not exists')
