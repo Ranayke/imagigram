@@ -28,7 +28,7 @@ export default function Add() {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
-        {/* <Camera style={{ flex: 1, aspectRatio: 1 }} type={type} ratio={'1:1'} /> */}
+        <Camera style={{ flex: 1, aspectRatio: 1 }} type={type} ratio={'1:1'} />
         <Button title='Flip Camera' onPress={toggleCameraType} />
       </View>
     </View>
