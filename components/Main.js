@@ -1,22 +1,39 @@
 import React, { useEffect } from "react";
-import { View, Text } from "react-native";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { fetchUser } from "../redux/actions";
 
-const Main = (props) => {
-  const { currentUser } = props;
+import Feed from "./main/Feed";
+import Add from "./main/Add";
+import Profile from "./main/Profile";
 
+const Tab = createMaterialBottomTabNavigator();
+
+const Main = (props) => {
   useEffect(() => {
     props.fetchUser();
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Bem vindo {props.currentUser?.name}!</Text>
-    </View>
+    <Tab.Navigator
+      initialRouteName="Feed"
+      backBehavior="initialRoute"
+      labeled={false}
+    >
+      <Tab.Screen
+        name="Feed"
+        component={Feed}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="newspaper-variant" size={26} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

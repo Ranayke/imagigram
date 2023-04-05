@@ -43,7 +43,15 @@ export default function App() {
 
   const LoggedIn = () => (
     <Provider store={store}>
-      <Main />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Main"
+            component={Main}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 
