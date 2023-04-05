@@ -1,5 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import "firebase/auth";
+import "firebase/firestore";
 import { USER_STATE_CHANGE } from '../constants';
 
 import { app, db }  from '../../database/firebaseConfig';

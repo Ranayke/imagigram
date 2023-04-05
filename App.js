@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { app } from "./database/firebaseConfig";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import "firebase/auth";
 
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
@@ -14,6 +15,7 @@ import Main from "./components/Main";
 import { Landing } from "./components/auth/Landing";
 import { Register } from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import Add from "./components/main/Add";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,12 +46,13 @@ export default function App() {
   const LoggedIn = () => (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="Main">
           <Stack.Screen
             name="Main"
             component={Main}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="Add" component={Add} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
@@ -63,7 +66,7 @@ export default function App() {
 
   const LoggedOut = () => (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Landing">
         <Stack.Screen
           name="Home"
           component={Landing}
