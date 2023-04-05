@@ -33,6 +33,30 @@ const Main = (props) => {
           ),
         }}
       />
+      <Tab.Screen
+        name="Add"
+        component={Add}
+        listeners={({ navigation }) => ({
+          tabPress: (event) => {
+            event.preventDefault();
+            navigation.navigate("Add");
+          },
+        })}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="plus-box" size={26} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="account-circle" size={26} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
