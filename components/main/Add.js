@@ -6,6 +6,8 @@ import * as ImagePicker from "expo-image-picker";
 export default function Add() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [image, setImage] = useState();
   const [type, setType] = useState(CameraType.back);
 
   useEffect(() => {
@@ -18,6 +20,13 @@ export default function Add() {
     })();
   }, []);
 
+  const takePicture = async () => {
+    if (camera) {
+      const data = await camera.takePictureAsync(null);
+      setImage(data.uri);
+    }
+  };
+
   if (hasCameraPermission === null || hasGalleryPermission === null) {
     return <View />;
   }
@@ -28,7 +37,7 @@ export default function Add() {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <Camera style={{ flex: 1, aspectRatio: 1 }} type={type} ratio={"1:1"} />
+        <Camera ref={(ref) => setCamera(ref)} style={{ flex: 1, aspectRatio: 1 }} type={type} ratio={"1:1"} />
       </View>
       <View
         style={{
@@ -48,6 +57,11 @@ export default function Add() {
                 : Camera.Constants.Type.back
             );
           }}
+        />
+        <Button
+          title="Take Picture"
+          icon="camera-plus-outline"
+          onPress={() => takePicture()}
         />
       </View>
     </View>
