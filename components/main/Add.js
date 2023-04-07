@@ -30,17 +30,26 @@ export default function Add() {
       <View style={{ flex: 1, flexDirection: "row" }}>
         <Camera style={{ flex: 1, aspectRatio: 1 }} type={type} ratio={"1:1"} />
       </View>
-
-      <Button
-        title="Flip Camera"
-        onPress={() => {
-          setType(
-            type === Camera.Constants.Type.back
-              ? Camera.Constants.Type.front
-              : Camera.Constants.Type.back
-          );
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "flex-end",
+          marginBottom: "1rem",
         }}
-      />
+      >
+        <Button
+          title="Flip Camera"
+          onPress={() => {
+            setType(
+              type === Camera.Constants.Type.back
+                ? Camera.Constants.Type.front
+                : Camera.Constants.Type.back
+            );
+          }}
+        />
+      </View>
     </View>
   );
 }
