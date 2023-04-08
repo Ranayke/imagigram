@@ -16,6 +16,7 @@ import { Landing } from "./components/auth/Landing";
 import { Register } from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Add from "./components/main/Add";
+import Save from "./components/main/Save";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Add" component={Add} />
+          <Stack.Screen name="Save" component={Save} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
