@@ -1,46 +1,92 @@
-import React, { useState } from 'react';
-import { View, Image } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import React, { useState } from "react";
+import { View, Image } from "react-native";
+import { TextInput, Button } from "react-native-paper";
 
 import { getAuth } from "firebase/auth";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-import 'firebase/storage';
-import 'firebase/auth';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import "firebase/storage";
+import "firebase/auth";
 
-import { app }  from '../../database/firebaseConfig';
+import { app } from "../../database/firebaseConfig";
 
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-console.log('storage: ', storage)
+console.log("storage: ", storage);
 
 const Save = ({ navigation, route }) => {
   const { image } = route.params;
-  const [caption, setCaption] = useState('');
+  const [caption, setCaption] = useState("");
 
   const uploadImage = async () => {
-    const childPath = `post/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+    const childPath = `post/${auth.currentUser.uid}/${Math.random().toString(
+      36
+    )}`;
     const res = await fetch(image);
     const blob = await res.blob();
+    const storageRef = ref(storage, childPath);
+    const uploadTask = uploadBytesResumable(storageRef, blob);
 
-    const storageRef = ref(storage, childPath)
-
-    uploadBytes(storageRef, blob).then((snapshot) => {
-      console.log('Uploaded a blob or file!');
-    });
+    // Listen for state changes, errors, and completion of the upload.
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+        }
+      },
+      (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case "storage/unauthorized":
+            // User doesn't have permission to access the object
+            console.log("storage/unauthorized: ", error.message);
+            break;
+          case "storage/canceled":
+            // User canceled the upload
+            console.log("storage/canceled: ", error.message);
+            break;
+          case "storage/unknown":
+            // Unknown error occurred, inspect error.serverResponse
+            console.log("storage/unknown: ", error.message);
+            break;
+        }
+      },
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          ///savePostData(downloadURL)
+        });
+      }
+    );
   };
 
   return (
     <View style={{ flex: 1 }}>
       <Image source={{ uri: image }} />
       <TextInput
-        placeholder='Enter a description...'
+        placeholder="Enter a description..."
         onChangeText={(caption) => setCaption(caption)}
       />
       <Button onPress={() => uploadImage()}>Save</Button>
     </View>
   );
-}
-
+};
 
 export default Save;
