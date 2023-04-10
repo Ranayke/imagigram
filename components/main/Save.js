@@ -9,10 +9,11 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import "firebase/storage";
 import "firebase/auth";
 
-import { app } from "../../database/firebaseConfig";
+import { app, db } from "../../database/firebaseConfig";
 
 const auth = getAuth(app);
 const storage = getStorage(app);
@@ -71,10 +72,22 @@ const Save = ({ navigation, route }) => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("File available at", downloadURL);
-          ///savePostData(downloadURL)
+          savePostData(downloadURL);
         });
       }
     );
+  };
+
+  const savePostData = async (downloadURL) => {
+    const postsRef = collection(db, "posts");
+
+    await addDoc(collection(postsRef, auth.currentUser.uid, "userPosts"), {
+      downloadURL,
+      caption,
+      creation: serverTimestamp(),
+    });
+
+    navigation.popToTop();
   };
 
   return (

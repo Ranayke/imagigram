@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { fetchUser } from "../redux/actions";
 
 import Feed from "./main/Feed";
-import Add from "./main/Add";
 import Profile from "./main/Profile";
 
 const Tab = createMaterialBottomTabNavigator();
