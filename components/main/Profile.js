@@ -3,20 +3,26 @@ import { View, StyleSheet, Image, FlatList } from "react-native";
 import { Avatar, Card } from "react-native-paper";
 import { connect } from "react-redux";
 
-import { getAuth } from "firebase/auth";
 import { doc, collection, query, getDocs, getDoc } from "firebase/firestore";
 
-import { app, db } from "../../database/firebaseConfig";
+import { db } from "../../database/firebaseConfig";
 
 const Profile = ({ currentUser, posts, route }) => {
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
   const { uid } = route.params;
 
-  const fetchUser = () => {
-    const auth = getAuth(app);
-    const uid = auth.currentUser.uid;
+  useEffect(() => {
+    if (uid && uid === currentUser.uid) {
+      setUser(currentUser);
+      setUserPosts(posts);
+    } else {
+      fetchUser();
+      fetchUserPosts();
+    }
+  }, [uid]);
 
+  const fetchUser = () => {
     const docRef = doc(db, "users", uid);
 
     getDoc(docRef).then((snapshot) => {
@@ -30,9 +36,6 @@ const Profile = ({ currentUser, posts, route }) => {
   };
 
   const fetchUserPosts = async () => {
-    const auth = getAuth(app);
-    const uid = auth.currentUser.uid;
-
     const postsRef = collection(db, "posts");
 
     const queryPosts = query(collection(postsRef, uid, "userPosts"));
@@ -46,16 +49,6 @@ const Profile = ({ currentUser, posts, route }) => {
 
     setUserPosts(posts);
   };
-
-  useEffect(() => {
-    if (uid && uid === currentUser.uid) {
-      setUser(currentUser);
-      setUserPosts(posts);
-    } else {
-      fetchUser();
-      fetchUserPosts();
-    }
-  }, []);
 
   if (!user) return <View />;
 
