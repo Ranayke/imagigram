@@ -11,6 +11,7 @@ import { app } from "../database/firebaseConfig";
 
 import Feed from "./main/Feed";
 import Profile from "./main/Profile";
+import Search from "./main/Search";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -37,6 +38,15 @@ const Main = ({ fetchUser, fetchUserPosts }) => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="newspaper-variant" size={26} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="magnify" size={26} color={color} />
           ),
         }}
       />
