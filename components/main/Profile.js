@@ -14,12 +14,14 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../../database/firebaseConfig";
+import { fetchUserFollowing } from '../../redux/actions'
 
-const Profile = ({ currentUser, posts, route }) => {
+const Profile = ({ currentUser, posts, route, following, fetchUserFollowing }) => {
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const { uid } = route.params;
+  following && console.log('following: ', uid, following, following.includes(uid))
 
   useEffect(() => {
     if (uid && uid === currentUser.uid) {
@@ -30,6 +32,15 @@ const Profile = ({ currentUser, posts, route }) => {
       fetchUserPosts();
     }
   }, [uid]);
+
+  useEffect(() => {
+    if (following && following.includes(uid)) {
+      setIsFollowing(true);
+    } else {
+      setIsFollowing(false);
+    }
+  }, 
+  [following])
 
   const fetchUser = () => {
     const docRef = doc(db, "users", uid);
@@ -62,14 +73,14 @@ const Profile = ({ currentUser, posts, route }) => {
   const handleFollow = async () => {
     const followingRef = collection(db, "following");
     await setDoc(doc(followingRef, currentUser.uid, "userFollowing", uid), {});
-    setIsFollowing(true);
+    fetchUserFollowing();
   };
 
   const handleUnFollow = async () => {
     await deleteDoc(
       doc(db, "following", currentUser.uid, "userFollowing", uid)
     );
-    setIsFollowing(false);
+    fetchUserFollowing();
   };
 
   if (!user) return <View />;
@@ -104,7 +115,7 @@ const Profile = ({ currentUser, posts, route }) => {
                       Follow
                     </Button>
                   )}
-                  {!isFollowing && (
+                  {isFollowing && (
                     <Button
                       icon="account-multiple-remove-outline"
                       onPress={handleUnFollow}
@@ -157,6 +168,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
+  following: store.userState.following
 });
 
-export default connect(mapStateToProps, null)(Profile);
+const mapDispatchToProps = { fetchUserFollowing }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
