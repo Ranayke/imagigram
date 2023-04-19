@@ -1,53 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, FlatList } from "react-native";
 import { ActivityIndicator, Avatar, Card, Paragraph } from "react-native-paper";
-
-const initialMockData = [
-  {
-    user: {
-      name: "Maria",
-      email: "maria@examples.com",
-      avatar:
-        "https://wealthspire.com/wp-content/uploads/2017/06/avatar-placeholder-generic-1.jpg",
-    },
-    downloadURL:
-      "https://firebasestorage.googleapis.com/v0/b/imagigram-d632e.appspot.com/o/post%2FAg4HBTxIvxMhmJgsq4XWawv1AoB3%2F0.b52kstyu45?alt=media&token=f08508b7-ff79-4e9b-8e66-fe90dc6ff27f",
-    caption: "cat 1",
-  },
-  {
-    user: {
-      name: "Maria",
-      email: "maria@examples.com",
-      avatar:
-        "https://wealthspire.com/wp-content/uploads/2017/06/avatar-placeholder-generic-1.jpg",
-    },
-    downloadURL:
-      "https://firebasestorage.googleapis.com/v0/b/imagigram-d632e.appspot.com/o/post%2FAg4HBTxIvxMhmJgsq4XWawv1AoB3%2F0.1pvf1ja22xw?alt=media&token=50cd9ac7-a1c2-4bb0-9c9c-3e1400036cf7",
-    caption: "cat 2",
-  },
-  {
-    user: {
-      name: "Grace",
-      email: "grace@example.com",
-      avatar:
-        "https://wealthspire.com/wp-content/uploads/2017/06/avatar-placeholder-generic-1.jpg",
-    },
-    downloadURL:
-      "https://firebasestorage.googleapis.com/v0/b/imagigram-d632e.appspot.com/o/post%2FAFRTFyglJOYdIshn9WoYazlEszO2%2F0.lvgodlpqtbb?alt=media&token=145c6029-15f3-41df-a493-f1ecf6fd53f2",
-    caption: "dog 1",
-  },
-  {
-    user: {
-      name: "Maria",
-      email: "grace@example.com",
-      avatar:
-        "https://wealthspire.com/wp-content/uploads/2017/06/avatar-placeholder-generic-1.jpg",
-    },
-    downloadURL:
-      "https://firebasestorage.googleapis.com/v0/b/imagigram-d632e.appspot.com/o/post%2FAFRTFyglJOYdIshn9WoYazlEszO2%2F0.1g9vpaav6mg?alt=media&token=15222345-8971-401e-b075-cd5fb5d2c526",
-    caption: "dog 2",
-  },
-];
+import { connect } from "react-redux";
 
 const Loading = () => (
   <View style={styles.loadingContainer}>
@@ -55,8 +9,16 @@ const Loading = () => (
   </View>
 );
 
-const Feed = () => {
-  const [posts, setPosts] = useState(initialMockData);
+const Feed = ({ feed, following, usersFollowingLoaded }) => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (following.length > 0 && usersFollowingLoaded === following.length) {
+      feed.sort((x, y) => x.creation - y.creation);
+      setPosts(feed);
+    }
+  }, [feed, usersFollowingLoaded]);
+
   return (
     <View style={styles.container}>
       {postMessage.length === 0 && <Loading />}
@@ -121,4 +83,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Feed;
+const mapStateToProps = (store) => ({
+  following: store.userState.following,
+  feed: store.usersState.feed,
+  usersFollowingLoaded: store.usersState.usersFollowingLoaded,
+});
+
+export default connect(mapStateToProps, null)(Feed);
