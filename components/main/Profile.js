@@ -12,16 +12,25 @@ import {
   setDoc,
   deleteDoc,
 } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
 
-import { db } from "../../database/firebaseConfig";
-import { fetchUserFollowing } from '../../redux/actions'
+import { db, app } from "../../database/firebaseConfig";
+import { fetchUserFollowing, clearData } from "../../redux/actions";
 
-const Profile = ({ currentUser, posts, route, following, fetchUserFollowing }) => {
+const Profile = ({
+  currentUser,
+  posts,
+  route,
+  following,
+  fetchUserFollowing,
+  clearData,
+}) => {
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const { uid } = route.params;
-  following && console.log('following: ', uid, following, following.includes(uid))
+  following &&
+    console.log("following: ", uid, following, following.includes(uid));
 
   useEffect(() => {
     if (uid && uid === currentUser.uid) {
@@ -39,8 +48,7 @@ const Profile = ({ currentUser, posts, route, following, fetchUserFollowing }) =
     } else {
       setIsFollowing(false);
     }
-  }, 
-  [following])
+  }, [following]);
 
   const fetchUser = () => {
     const docRef = doc(db, "users", uid);
@@ -81,6 +89,19 @@ const Profile = ({ currentUser, posts, route, following, fetchUserFollowing }) =
       doc(db, "following", currentUser.uid, "userFollowing", uid)
     );
     fetchUserFollowing();
+  };
+
+  const handleLogout = () => {
+    const auth = getAuth(app);
+
+    signOut(auth)
+      .then(() => {
+        clearData();
+        console.log("Sign-out successful");
+      })
+      .catch((error) => {
+        console.log("An error happened: ", error);
+      });
   };
 
   if (!user) return <View />;
@@ -125,6 +146,11 @@ const Profile = ({ currentUser, posts, route, following, fetchUserFollowing }) =
                   )}
                 </>
               )}
+              {uid && uid === currentUser.uid && (
+                <Button icon="logout-variant" onPress={handleLogout}>
+                  Logout
+                </Button>
+              )}
             </Card.Actions>
           </Card.Content>
         </Card>
@@ -168,9 +194,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
-  following: store.userState.following
+  following: store.userState.following,
 });
 
-const mapDispatchToProps = { fetchUserFollowing }
+const mapDispatchToProps = { fetchUserFollowing, clearData };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
