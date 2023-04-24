@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, FlatList } from "react-native";
-import { ActivityIndicator, Avatar, Card, Paragraph } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Avatar,
+  Card,
+  Paragraph,
+  Button,
+} from "react-native-paper";
 import { connect } from "react-redux";
 
 const Loading = () => (
@@ -9,7 +15,7 @@ const Loading = () => (
   </View>
 );
 
-const Feed = ({ feed, following, usersFollowingLoaded }) => {
+const Feed = ({ feed, following, usersFollowingLoaded, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -51,6 +57,19 @@ const Feed = ({ feed, following, usersFollowingLoaded }) => {
                   />
                 </View>
                 <Paragraph>{item?.caption}</Paragraph>
+                <Card.Actions>
+                  <Button
+                    icon="comment-arrow-right"
+                    onPress={() => {
+                      navigation.navigate("Comment", {
+                        postId: item.id,
+                        uid: item.user.uid,
+                      });
+                    }}
+                  >
+                    View Comments...
+                  </Button>
+                </Card.Actions>
               </Card.Content>
             </Card>
           )}
