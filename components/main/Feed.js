@@ -6,8 +6,12 @@ import {
   Card,
   Paragraph,
   Button,
+  Caption,
 } from "react-native-paper";
 import { connect } from "react-redux";
+
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../../database/firebaseConfig";
 
 const Loading = () => (
   <View style={styles.loadingContainer}>
@@ -15,7 +19,13 @@ const Loading = () => (
   </View>
 );
 
-const Feed = ({ feed, following, usersFollowingLoaded, navigation }) => {
+const Feed = ({
+  feed,
+  following,
+  usersFollowingLoaded,
+  navigation,
+  currentUser,
+}) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -24,6 +34,14 @@ const Feed = ({ feed, following, usersFollowingLoaded, navigation }) => {
       setPosts(feed);
     }
   }, [feed, usersFollowingLoaded]);
+
+  const onLikePress = async (userId, postId) => {
+    const postsRef = collection(db, "posts");
+    await setDoc(
+      doc(postsRef, userId, "userPosts", postId, "likes", currentUser.uid),
+      {}
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -58,6 +76,13 @@ const Feed = ({ feed, following, usersFollowingLoaded, navigation }) => {
                 </View>
                 <Paragraph>{item?.caption}</Paragraph>
                 <Card.Actions>
+                  <Caption>10</Caption>
+                  <Button
+                    icon="heart"
+                    onPress={() => onLikePress(item.user.uid, item.id)}
+                  >
+                    Like
+                  </Button>
                   <Button
                     icon="comment-arrow-right"
                     onPress={() => {
@@ -103,6 +128,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
   following: store.userState.following,
   feed: store.usersState.feed,
   usersFollowingLoaded: store.usersState.usersFollowingLoaded,
