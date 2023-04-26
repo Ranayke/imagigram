@@ -10,7 +10,7 @@ import {
 } from "react-native-paper";
 import { connect } from "react-redux";
 
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../database/firebaseConfig";
 
 const Loading = () => (
@@ -40,6 +40,12 @@ const Feed = ({
     await setDoc(
       doc(postsRef, userId, "userPosts", postId, "likes", currentUser.uid),
       {}
+    );
+  };
+
+  const onDisLikePress = async (userId, postId) => {
+    await deleteDoc(
+      doc(db, "posts", userId, "userPosts", postId, "likes", currentUser.uid)
     );
   };
 
@@ -76,13 +82,22 @@ const Feed = ({
                 </View>
                 <Paragraph>{item?.caption}</Paragraph>
                 <Card.Actions>
-                  <Caption>10</Caption>
-                  <Button
-                    icon="heart"
-                    onPress={() => onLikePress(item.user.uid, item.id)}
-                  >
-                    Like
-                  </Button>
+                  <Caption>{item?.likes || 2}</Caption>
+                  {item?.currentUserLike ? (
+                    <Button
+                      icon="heart"
+                      onPress={() => onDisLikePress(item.user.uid, item.id)}
+                    >
+                      Dislike
+                    </Button>
+                  ) : (
+                    <Button
+                      icon="heart"
+                      onPress={() => onLikePress(item.user.uid, item.id)}
+                    >
+                      Like
+                    </Button>
+                  )}
                   <Button
                     icon="comment-arrow-right"
                     onPress={() => {
