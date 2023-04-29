@@ -11,8 +11,6 @@ import {
   fetchUserFollowing,
   clearData
 } from "../redux/actions";
-import { getAuth } from "firebase/auth";
-import { app } from "../database/firebaseConfig";
 
 import Feed from "./main/Feed";
 import Profile from "./main/Profile";
@@ -22,7 +20,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 const Null = () => null;
 
-const Main = ({ fetchUser, fetchUserPosts, fetchUserFollowing, clearData }) => {
+const Main = ({ currentUser, fetchUser, fetchUserPosts, fetchUserFollowing, clearData }) => {
   useEffect(() => {
     clearData();
     fetchUser();
@@ -30,14 +28,14 @@ const Main = ({ fetchUser, fetchUserPosts, fetchUserFollowing, clearData }) => {
     fetchUserFollowing();
   }, []);
 
-  const auth = getAuth(app);
-  const uid = auth.currentUser.uid;
-
   return (
     <Tab.Navigator
       initialRouteName="Feed"
       backBehavior="initialRoute"
       labeled={false}
+      activeColor="rgb(28, 27, 31)"
+      inactiveColor="#ffffff"
+      barStyle={{ backgroundColor: '#ff7300'}}
     >
       <Tab.Screen
         name="Feed"
@@ -79,7 +77,7 @@ const Main = ({ fetchUser, fetchUserPosts, fetchUserFollowing, clearData }) => {
           tabPress: (event) => {
             event.preventDefault();
             navigation.navigate("Profile", {
-              uid,
+              uid: currentUser.uid,
             });
           },
         })}
