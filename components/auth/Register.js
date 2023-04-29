@@ -34,7 +34,7 @@ export function Register({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View>
       <TextInput placeholder="Nome" onChangeText={setName} />
       <TextInput placeholder="E-mail" onChangeText={setEmail} />
       <TextInput
@@ -43,7 +43,6 @@ export function Register({ navigation }) {
         secureTextEntry
       />
       <Button title="Submit" onPress={handleSubmit} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 }

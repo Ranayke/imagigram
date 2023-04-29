@@ -70,7 +70,7 @@ export default function App() {
             <Stack.Screen
               name="Main"
               component={Main}
-              options={{ headerShown: false }}
+              options={{ header: (props) => <HeaderBar {...props} /> }}
             />
             <Stack.Screen name="Add" component={Add} />
             <Stack.Screen name="Save" component={Save} />
@@ -95,7 +95,11 @@ export default function App() {
     <PaperProvider theme={theme}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator initialRouteName="Landing">
-          <Stack.Screen name="Home" component={Landing} />
+          <Stack.Screen
+            name="Landing"
+            component={Landing}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Login" component={Login} />
         </Stack.Navigator>

@@ -7,7 +7,7 @@ export function Landing({ navigation }) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Image
-        style={{ width: "43%", height: 205, marginBottom: 48 }}
+        style={{ width: "43%", height: 210, marginBottom: 48 }}
         source={logo}
       />
       <Button
